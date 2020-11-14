@@ -18,6 +18,11 @@ public enum TipoToken {
     OP_DIV,
     OP_RELACAO,
     DIGITO,
-    IDENTIFICADOR
+    IDENTIFICADOR,
+    MAIOR,
+    MENOR,
+    IGUAL,
+    
+    
     
 }

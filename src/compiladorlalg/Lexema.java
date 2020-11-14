@@ -11,12 +11,14 @@ package compiladorlalg;
  */
 public class Lexema {
    public String token;
-   public String tipoToken;
+   public TipoToken tipoToken;
 
-    public Lexema(String token, String tipoToken) {
+    public Lexema(String token, TipoToken tipoToken) {
         this.token = token;
         this.tipoToken = tipoToken;
     }
+
+    
 
     public String getToken() {
         return token;
@@ -26,12 +28,14 @@ public class Lexema {
         this.token = token;
     }
 
-    public String getTipoToken() {
+    public TipoToken getTipoToken() {
         return tipoToken;
     }
 
-    public void setTipoToken(String tipoToken) {
+    public void setTipoToken(TipoToken tipoToken) {
         this.tipoToken = tipoToken;
     }
+
+  
    
 }
