@@ -20,5 +20,6 @@ public enum TipoToken {
     MAIOR,
     MENOR,
     IGUAL,
-    ERRO
+    ERRO,
+    ESPACO,
 }

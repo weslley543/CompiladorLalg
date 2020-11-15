@@ -25,7 +25,7 @@ public class AnalisadorLexico {
         this.lexemas = new ArrayList();
         this.palavrasReservadas = new ArrayList();
         try{
-            Scanner read = new Scanner(new File("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\palavrasReservadas.txt"));
+            Scanner read = new Scanner(new File("C:\\Users\\giuli\\OneDrive\\Documentos\\Unesp\\Compiladores\\CompiladorLalg\\build\\classes\\compiladorlalg\\palavrasReservadas.txt"));
             while(read.hasNextLine()){
                 String aux = read.nextLine();
                 this.palavrasReservadas.add(aux);
@@ -52,22 +52,23 @@ public class AnalisadorLexico {
         this.buffer = buffer;
     }
     
-    public void buscarPalavraReservada(String lexema){
+    public void buscarPalavraReservada(String lexema, int linha, int coluna){
         
-        palavrasReservadas.forEach((palavraReservada) -> {
-            if(palavraReservada.equals(lexema)){
-                this.lexemas.add(new Lexema(lexema,TipoToken.PALAVRA_RESERVADA));
-                
-            }else{
-                this.lexemas.add(new Lexema(lexema, TipoToken.IDENTIFICADOR));
+        for(int i = 0; i < palavrasReservadas.size(); i++){
+            if(palavrasReservadas.get(i).equals(lexema)){
+                this.lexemas.add(new Lexema(lexema, TipoToken.PALAVRA_RESERVADA, linha, coluna));
+                break;
+            } 
+            else if((i + 1 == palavrasReservadas.size())){
+                this.lexemas.add(new Lexema(lexema, TipoToken.IDENTIFICADOR, linha, coluna));
             }
-       
-        });
+        }
     }
     
     
     public void analisadorLexico (String diretorio){
         try{
+            
             int linha = 1;
             this.sc = new Scanner(new File(diretorio));
             Lexema aux =null;
@@ -76,20 +77,22 @@ public class AnalisadorLexico {
                 String exp = sc.nextLine();
                 int coluna;
                 this.buffer = new StringBuffer();
+                ArrayList<Integer> colunas = new ArrayList();
                 for(coluna = 0; coluna<exp.length(); coluna++){
                     String cur = exp.substring(coluna, coluna+1);
                     if(cur.matches("[0-9.a-zA-Z_]")){
                         this.buffer.append(cur);
+                        colunas.add(coluna);
                         continue;
                     }else if(buffer.length()>0){
                         String token = this.buffer.toString();
                         if(token.matches("[0-9]+|[0-9]+\\.[0-9]+|[0-9]+[eE][0-9]+")){
-                            aux = new Lexema(token, TipoToken.NUMERO);
+                            aux = new Lexema(token, TipoToken.NUMERO, linha, colunas.get(0));
                             this.lexemas.add(aux);
                         }else if(token.matches("[A-Za-z_]+[0-9]*")){
-                            buscarPalavraReservada(token);
+                            buscarPalavraReservada(token, linha, colunas.get(0));
                         }else{
-                             lexemas.add(new Lexema(token, TipoToken.ERRO));
+                             lexemas.add(new Lexema(token, TipoToken.ERRO, linha, colunas.get(0)));
                         }
                     }
                     
@@ -97,27 +100,39 @@ public class AnalisadorLexico {
                     
                     switch(chr){
                         case '+':
-                            aux = new Lexema("+", TipoToken.OP_SOMA);
+                            aux = new Lexema("+", TipoToken.OP_SOMA, linha, coluna);
                             lexemas.add(aux);
                             break;
                         case '-': 
-                            aux = new Lexema("-", TipoToken.OP_SUB);
+                            aux = new Lexema("-", TipoToken.OP_SUB, linha, coluna);
                             lexemas.add(aux);
                             break;
                         case '/': 
-                            aux = new Lexema("/", TipoToken.OP_DIV);
+                            aux = new Lexema("/", TipoToken.OP_DIV, linha, coluna);
                             lexemas.add(aux);
+                            break;
                         case '*':
-                            aux = new Lexema("*", TipoToken.OP_MUL);
+                            aux = new Lexema("*", TipoToken.OP_MUL, linha, coluna);
                             lexemas.add(aux);
+                            break;
                         case '<':
-                            aux = new Lexema("<", TipoToken.MENOR);
+                            aux = new Lexema("<", TipoToken.MENOR, linha, coluna);
                             lexemas.add(aux);
+                            break;
                         case '>':
-                            aux = new Lexema(">", TipoToken.MAIOR);
+                            aux = new Lexema(">", TipoToken.MAIOR, linha, coluna);
                             lexemas.add(aux);
+                            break;
+                        case ' ':
+                            this.buffer.delete(0, this.buffer.length());
+                            break;
                         default: 
-                            lexemas.add(new Lexema(Character.toString(chr), TipoToken.ERRO));
+                            lexemas.add(new Lexema(Character.toString(chr), TipoToken.ERRO, linha, coluna));
+                    }
+                    
+                    int size = colunas.size();
+                    for(int j = 0; j < size; j++){
+                        colunas.remove(0);
                     }
                     
                 }
@@ -125,18 +140,17 @@ public class AnalisadorLexico {
                 if(this.buffer.length() > 0){
                     String token = this.buffer.toString();
                     if(token.matches("[0-9]+|[0-9]+\\.[0-9]+|[0-9]+[eE][0-9]+")){
-                        lexemas.add(new Lexema(token, TipoToken.NUMERO));
+                        lexemas.add(new Lexema(token, TipoToken.NUMERO, linha, colunas.get(0)));
                     }else if(token.matches("[A-Za-z_]+[0-9]*")){
-                        buscarPalavraReservada(token);
+                        buscarPalavraReservada(token, linha, colunas.get(0));
                     }else{
-                        lexemas.add(new Lexema(token, TipoToken.ERRO));
+                        lexemas.add(new Lexema(token, TipoToken.ERRO, linha, colunas.get(0)));
                     }
+                    
+                    this.buffer.delete(0, this.buffer.length());
                 }
+                linha++;
             }
-            
-            lexemas.forEach((lexema)->{
-                System.out.println(lexema.getTipoToken());
-            });
             
         }catch(FileNotFoundException e){
             throw new Error("Erro ao abrir arquivo");

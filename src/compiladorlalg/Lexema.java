@@ -12,13 +12,21 @@ package compiladorlalg;
 public class Lexema {
    public String token;
    public TipoToken tipoToken;
+   public int linhaLida;
+   public int colunaLida;
 
     public Lexema(String token, TipoToken tipoToken) {
         this.token = token;
         this.tipoToken = tipoToken;
     }
-
     
+    public Lexema(String token, TipoToken tipoToken, int nLinha, int nColuna) {
+        this.token = token;
+        this.tipoToken = tipoToken;
+        this.linhaLida = nLinha;
+        this.colunaLida = nColuna;
+    }
+
 
     public String getToken() {
         return token;
@@ -36,6 +44,22 @@ public class Lexema {
         this.tipoToken = tipoToken;
     }
 
-  
+    public int getLinhaLida() {
+        return linhaLida;
+    }
+
+    public void setLinhaLida(int linhaLida) {
+        this.linhaLida = linhaLida;
+    }
+
+    public int getColunaLida() {
+        return colunaLida;
+    }
+
+    public void setColunaLida(int colunaLida) {
+        this.colunaLida = colunaLida;
+    }
+
+    
    
 }
