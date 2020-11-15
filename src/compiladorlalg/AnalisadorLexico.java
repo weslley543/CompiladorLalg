@@ -30,6 +30,9 @@ public class AnalisadorLexico {
                 String aux = read.nextLine();
                 this.palavrasReservadas.add(aux);
             }
+            palavrasReservadas.forEach((palavra) ->{
+                System.out.println(palavra);
+            });
         }catch(FileNotFoundException e){
             throw new Error("Arquivo de palavra reservadas não encontrados");
         }
@@ -54,15 +57,17 @@ public class AnalisadorLexico {
     
     public void buscarPalavraReservada(String lexema){
         
-        palavrasReservadas.forEach((palavraReservada) -> {
-            if(palavraReservada.equals(lexema)){
-                this.lexemas.add(new Lexema(lexema,TipoToken.PALAVRA_RESERVADA));
-                
-            }else{
-                this.lexemas.add(new Lexema(lexema, TipoToken.IDENTIFICADOR));
-            }
-       
-        });
+       for(int i=0 ; i<this.palavrasReservadas.size(); i++){
+          String strAux = this.palavrasReservadas.get(i);
+           System.out.println(strAux +" "+  lexema);
+          if(strAux.compareTo(lexema) ==0){
+              lexemas.add(new Lexema(lexema, TipoToken.PALAVRA_RESERVADA));
+              break;
+          }else{
+              lexemas.add(new Lexema(lexema, TipoToken.IDENTIFICADOR));
+              break;
+          }
+       }
     }
     
     
@@ -132,10 +137,11 @@ public class AnalisadorLexico {
                         lexemas.add(new Lexema(token, TipoToken.ERRO));
                     }
                 }
+                buffer.delete(0, buffer.length());
             }
             
             lexemas.forEach((lexema)->{
-                System.out.println(lexema.getTipoToken());
+                System.out.println(lexema.getTipoToken() + "  " + lexema.getToken());
             });
             
         }catch(FileNotFoundException e){

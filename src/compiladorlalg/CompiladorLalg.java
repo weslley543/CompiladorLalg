@@ -16,7 +16,7 @@ public class CompiladorLalg {
      */
     public static void main(String[] args) {
         AnalisadorLexico al = new AnalisadorLexico();
-        al.buscarPalavraReservada("for");
+        al.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\palavrasReservadas.txt");
     }
     
 }
