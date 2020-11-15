@@ -16,13 +16,9 @@ public enum TipoToken {
     OP_SOMA,
     OP_SUB,
     OP_DIV,
-    OP_RELACAO,
-    DIGITO,
     IDENTIFICADOR,
     MAIOR,
     MENOR,
     IGUAL,
-    
-    
-    
+    ERRO
 }

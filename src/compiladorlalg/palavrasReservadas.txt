@@ -1,0 +1,16 @@
+begin
+boolean
+else
+end
+false
+for
+if
+integer
+procedure
+program
+read
+real
+then
+true
+while
+write
