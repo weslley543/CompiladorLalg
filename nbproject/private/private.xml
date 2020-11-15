@@ -5,7 +5,9 @@
         <group>
             <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/Lexema.java</file>
             <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/AnalisadorLexico.java</file>
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/CompiladorLalg.java</file>
             <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/TipoToken.java</file>
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/palavrasReservadas.txt</file>
         </group>
     </open-files>
 </project-private>

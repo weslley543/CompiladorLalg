@@ -30,6 +30,9 @@ public class AnalisadorLexico {
                 String aux = read.nextLine();
                 this.palavrasReservadas.add(aux);
             }
+            palavrasReservadas.forEach((palavra) ->{
+                System.out.println(palavra);
+            });
         }catch(FileNotFoundException e){
             throw new Error("Arquivo de palavra reservadas não encontrados");
         }
@@ -152,6 +155,7 @@ public class AnalisadorLexico {
                 linha++;
             }
             
+
         }catch(FileNotFoundException e){
             throw new Error("Erro ao abrir arquivo");
         }
