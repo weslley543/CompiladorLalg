@@ -25,7 +25,8 @@ public class AnalisadorLexico {
         this.lexemas = new ArrayList();
         this.palavrasReservadas = new ArrayList();
         try{
-            Scanner read = new Scanner(new File("C:\\Users\\giuli\\OneDrive\\Documentos\\Unesp\\Compiladores\\CompiladorLalg\\build\\classes\\compiladorlalg\\palavrasReservadas.txt"));
+            File palavraReservada = new File("src/compiladorlalg/palavrasReservadas.txt");
+            Scanner read = new Scanner(palavraReservada);
             while(read.hasNextLine()){
                 String aux = read.nextLine();
                 this.palavrasReservadas.add(aux);

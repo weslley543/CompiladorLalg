@@ -18,14 +18,6 @@ public class CompiladorLalg {
      */
     public static void main(String[] args) {
         AnalisadorLexico al = new AnalisadorLexico();
-        //al.buscarPalavraReservada("for");
-//        al.analisadorLexico("C:\\Users\\giuli\\OneDrive\\Documentos\\teste2.txt");
-//        ArrayList <Lexema> lexemas = al.lexemas;
-//        
-//        for(int i = 0; i < lexemas.size(); i++){
-//            System.out.println(lexemas.get(i).token + " - " + lexemas.get(i).getTipoToken());
-//        }
-
         UIPrincipal principal = new UIPrincipal();
         principal.setVisible(true);
     }
