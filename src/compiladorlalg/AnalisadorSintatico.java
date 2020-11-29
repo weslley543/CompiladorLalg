@@ -16,14 +16,18 @@ public class AnalisadorSintatico {
     
     
     public void analisarDeclaracaoVariavel(String text){
+        if(text.length()== 0){
+            System.out.println("Análise vazia");
+            return;
+        }
+        
         String [] declaracaoVariaveis = text.split(";");
-        String tokenAnterior, tokenAtual;
-        tokenAnterior = declaracaoVariaveis[0];
-        tokenAtual = declaracaoVariaveis[1];
-        for(int i =1; i<=declaracaoVariaveis.length; i++ ){
-            System.out.println(tokenAnterior);
-            tokenAnterior = tokenAtual;
-           
+        
+        for (String declaracaoVariavel : declaracaoVariaveis) {
+            for(int i =0; i<declaracaoVariavel.length(); i++){
+                String atual = declaracaoVariavel.substring(i, i+1);
+                System.out.println(atual);
+            }  
         }
     }
     

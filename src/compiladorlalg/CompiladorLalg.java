@@ -21,7 +21,7 @@ public class CompiladorLalg {
 //        UIPrincipal principal = new UIPrincipal();
 //        principal.setVisible(true);
           AnalisadorSintatico a = new AnalisadorSintatico();
-          a.analisarDeclaracaoVariavel("int contador; float erro;");
+          a.analisarDeclaracaoVariavel("int a, b,c; float erro, banana;");
     }
     
 }

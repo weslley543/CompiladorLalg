@@ -70,7 +70,7 @@ public class AnalisadorLexico {
     }
     
     
-    public void analisadorLexico (String diretorio){
+    public ArrayList<Lexema> analisadorLexico (String diretorio){
         try{
             
             int linha = 1;
@@ -156,7 +156,7 @@ public class AnalisadorLexico {
                 linha++;
             }
             
-
+            return lexemas;
         }catch(FileNotFoundException e){
             throw new Error("Erro ao abrir arquivo");
         }
