@@ -18,19 +18,16 @@ public class AnalisadorSintatico {
         lexemas = null;
         
     }
-    public void analisadorSintatico(){
+    public void analisadorSintaticoAtribuicao(){
         this.anlLex = new AnalisadorLexico();
         this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
-        for(int i=1 ; i< lexemas.size()-1; i++){
-           if(lexemas.get(i-1).getTipoToken() == TipoToken.PALAVRA_RESERVADA){
-               while(lexemas.get(i).tipoToken != TipoToken.IDENTIFICADOR || lexemas.get(i).tipoToken != TipoToken.VIRGULA ){
-                if(lexemas.get(i).tipoToken == TipoToken.PONTO_VIRGULA){
-                    if()
-                    break;
-                 }
-                i++;
-               }
-           }
+        String aux = null;
+        for(int i=0 ; i<lexemas.size()-1; i++){
+            aux="";
+            if(lexemas.get(i).getTipoToken() == TipoToken.PALAVRA_RESERVADA){
+               i++;
+               if(lexemas)
+            }
         }
     }
     

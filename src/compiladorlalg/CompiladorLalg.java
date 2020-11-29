@@ -20,8 +20,11 @@ public class CompiladorLalg {
         
 //        UIPrincipal principal = new UIPrincipal();
 //        principal.setVisible(true);
-          AnalisadorSintatico a = new AnalisadorSintatico();;
-          a.analisadorSintatico();
+          AnalisadorSintatico a = new AnalisadorSintatico();
+          a.analisadorSintaticoAtribuicao();
+          
+          
+          
           
     }
     
