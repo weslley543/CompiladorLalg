@@ -5,7 +5,7 @@ end
 false
 for
 if
-integer
+int
 procedure
 program
 read

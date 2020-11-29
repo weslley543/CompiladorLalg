@@ -17,11 +17,12 @@ public class CompiladorLalg {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-//        AnalisadorLexico al = new AnalisadorLexico();;
+        
 //        UIPrincipal principal = new UIPrincipal();
 //        principal.setVisible(true);
-          AnalisadorSintatico a = new AnalisadorSintatico();
-          a.analisarDeclaracaoVariavel("int a, b,c; float erro, banana;");
+          AnalisadorSintatico a = new AnalisadorSintatico();;
+          a.analisadorSintatico();
+          
     }
     
 }

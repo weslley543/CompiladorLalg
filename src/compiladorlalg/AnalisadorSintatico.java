@@ -13,21 +13,24 @@ import java.util.ArrayList;
  */
 public class AnalisadorSintatico {
     public ArrayList <Lexema> lexemas;
-    
-    
-    public void analisarDeclaracaoVariavel(String text){
-        if(text.length()== 0){
-            System.out.println("Análise vazia");
-            return;
-        }
+    public AnalisadorLexico anlLex;
+    public AnalisadorSintatico(){
+        lexemas = null;
         
-        String [] declaracaoVariaveis = text.split(";");
-        
-        for (String declaracaoVariavel : declaracaoVariaveis) {
-            for(int i =0; i<declaracaoVariavel.length(); i++){
-                String atual = declaracaoVariavel.substring(i, i+1);
-                System.out.println(atual);
-            }  
+    }
+    public void analisadorSintatico(){
+        this.anlLex = new AnalisadorLexico();
+        this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
+        for(int i=1 ; i< lexemas.size()-1; i++){
+           if(lexemas.get(i-1).getTipoToken() == TipoToken.PALAVRA_RESERVADA){
+               while(lexemas.get(i).tipoToken != TipoToken.IDENTIFICADOR || lexemas.get(i).tipoToken != TipoToken.VIRGULA ){
+                if(lexemas.get(i).tipoToken == TipoToken.PONTO_VIRGULA){
+                    if()
+                    break;
+                 }
+                i++;
+               }
+           }
         }
     }
     

@@ -22,4 +22,6 @@ public enum TipoToken {
     IGUAL,
     ERRO,
     ESPACO,
+    PONTO_VIRGULA,
+    VIRGULA
 }
