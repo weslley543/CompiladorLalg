@@ -20,13 +20,13 @@ public class AnalisadorSintatico {
     }
     public void analisadorSintaticoAtribuicao(){
         this.anlLex = new AnalisadorLexico();
-        this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
+        this.lexemas = anlLex.analisadorLexico("src/compiladorlalg/arquivoTeste.txt");
         String aux = null;
         for(int i=0 ; i<lexemas.size()-1; i++){
             aux="";
             if(lexemas.get(i).getTipoToken() == TipoToken.PALAVRA_RESERVADA){
                i++;
-               if(lexemas)
+//               if(lexemas)
             }
         }
     }
