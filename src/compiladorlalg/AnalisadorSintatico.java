@@ -14,21 +14,47 @@ import java.util.ArrayList;
 public class AnalisadorSintatico {
     public ArrayList <Lexema> lexemas;
     public AnalisadorLexico anlLex;
+    public int index;
     public AnalisadorSintatico(){
         lexemas = null;
-        
+        this.index =1;
     }
+    
+   
     public void analisadorSintaticoAtribuicao(){
         this.anlLex = new AnalisadorLexico();
         this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
-        String aux = null;
-        for(int i=0 ; i<lexemas.size()-1; i++){
-            aux="";
-            if(lexemas.get(i).getTipoToken() == TipoToken.PALAVRA_RESERVADA){
-               i++;
-               if(lexemas)
-            }
+        
+        if(lexemas.get(0).getTipoToken() != TipoToken.PALAVRA_RESERVADA){
+            throw new Error("Erro na declaração de variaáveis a cadeia deve iniciar com um indentificador de tipos");
         }
+        
+        for(; this.index<lexemas.size(); this.index++){
+            
+            if(!buscarFimDeclaracao(lexemas.get(index-1), lexemas.get(index))){
+                throw new Error("Erro na declaração de variaáveis");
+            }
+           
+  
+        }
+    }
+    
+     public boolean buscarFimDeclaracao(Lexema lexAnt, Lexema lexProx){
+        if((lexAnt.getTipoToken() == TipoToken.IDENTIFICADOR && lexProx.getTipoToken() == TipoToken.VIRGULA) || ( lexAnt.getTipoToken() == TipoToken.VIRGULA && lexProx.getTipoToken() == TipoToken.IDENTIFICADOR )){
+           System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+            return true; 
+        }else if(lexAnt.getTipoToken() == TipoToken.IDENTIFICADOR && lexProx.getTipoToken() == TipoToken.PONTO_VIRGULA){
+            System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+            return true;
+        }else if(lexAnt.getTipoToken() == TipoToken.PONTO_VIRGULA && lexProx.getTipoToken() == TipoToken.PALAVRA_RESERVADA){
+            System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+            return true;
+        }else if(lexAnt.getTipoToken() == TipoToken.PALAVRA_RESERVADA && lexProx.getTipoToken() == TipoToken.IDENTIFICADOR){
+            System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+            return true;
+        }
+        System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+        return false;
     }
     
 }
