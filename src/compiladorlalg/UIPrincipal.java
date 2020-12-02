@@ -114,6 +114,7 @@ public class UIPrincipal extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) table.getModel(); //pega a tabela
                 
                 if(table.getRowCount() > 0){
+                    System.out.println("Tem linhas");
                     model.getDataVector().removeAllElements();
                 }
                 

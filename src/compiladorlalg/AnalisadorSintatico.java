@@ -23,7 +23,7 @@ public class AnalisadorSintatico {
    
     public void analisadorSintaticoAtribuicao(){
         this.anlLex = new AnalisadorLexico();
-        this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
+      this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
         
         if(lexemas.get(0).getTipoToken() != TipoToken.PALAVRA_RESERVADA){
             throw new Error("Erro na declaração de variaáveis a cadeia deve iniciar com um indentificador de tipos");
