@@ -1,1 +1,2 @@
-int banana, show, legal; real massa
+int banana, show, legal; 
+real massa;

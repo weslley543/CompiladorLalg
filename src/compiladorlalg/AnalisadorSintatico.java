@@ -21,18 +21,24 @@ public class AnalisadorSintatico {
     }
     
    
-    public void analisadorSintaticoAtribuicao(){
+    public void analisadorSintaticoAtribuicao(String caminho){
         this.anlLex = new AnalisadorLexico();
-      this.lexemas = anlLex.analisadorLexico("C:\\Users\\wesll\\Documents\\NetBeansProjects\\CompiladorLalg\\src\\compiladorlalg\\arquivoTeste.txt");
+      this.lexemas = anlLex.analisadorLexico(caminho);
+      
+//        System.out.println("Lexemas");
+//        for(int i = 0; i < lexemas.size(); i++){
+//            System.out.println(lexemas.get(i).getTipoToken() + " " + lexemas.get(i).getToken());
+//        }
         
         if(lexemas.get(0).getTipoToken() != TipoToken.PALAVRA_RESERVADA){
-            throw new Error("Erro na declaração de variaáveis a cadeia deve iniciar com um indentificador de tipos");
+            throw new Error("Erro na declaração de variáveis a cadeia deve iniciar com um indentificador de tipos");
         }
         
         for(; this.index<lexemas.size(); this.index++){
             
             if(!buscarFimDeclaracao(lexemas.get(index-1), lexemas.get(index))){
-                throw new Error("Erro na declaração de variaáveis");
+                System.out.println("ERRO");
+                throw new Error("Erro na declaração de variáveis");
             }
            
   
@@ -54,6 +60,7 @@ public class AnalisadorSintatico {
             return true;
         }
         System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+        
         return false;
     }
     
