@@ -7,8 +7,11 @@ package compiladorlalg;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -95,9 +98,9 @@ public class UIPrincipal extends javax.swing.JFrame {
                         .addComponent(openFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(23, 23, 23)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(78, 78, 78)
+                        .addGap(65, 65, 65)
                         .addComponent(resultado_sintatico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -109,12 +112,12 @@ public class UIPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(resultado_sintatico, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(resultado_sintatico, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(62, 62, 62))
         );
 
         pack();
@@ -150,6 +153,8 @@ public class UIPrincipal extends javax.swing.JFrame {
                     resultado_sintatico.setBackground(Color.red);
                     resultado_sintatico.setOpaque(true);
                     resultado_sintatico.setText(e + "");
+                } catch (IOException ex) {
+                    Logger.getLogger(UIPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
                 for(int i = 0; i < lexemasProduzidos.size(); i++){
