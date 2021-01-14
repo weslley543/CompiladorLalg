@@ -30,7 +30,7 @@ public class AnalisadorSintatico {
             System.out.println("deu certo");
         }
         else{
-            System.out.println("Alguma coisa deu errado");
+            System.out.println("Alguma estava errado");
         }
     }
     
