@@ -23,5 +23,9 @@ public enum TipoToken {
     ERRO,
     ESPACO,
     PONTO_VIRGULA,
-    VIRGULA
+    VIRGULA,
+    DOIS_PONTOS,
+    ABRE_PARENTESES,
+    FECHA_PARENTESES,
+    PONTO
 }

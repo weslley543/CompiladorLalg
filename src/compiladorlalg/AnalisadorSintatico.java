@@ -18,499 +18,315 @@ public class AnalisadorSintatico {
     public int index;
     public AnalisadorSintatico(){
         lexemas = null;
-        this.index =1;
+        this.index = 0;
     }
     
    
-    public void analisadorSintaticoAtribuicao(String caminho) throws IOException{
+    public void analisadorSintaticoAtribuicao(String caminho){
         this.anlLex = new AnalisadorLexico();
         this.lexemas = anlLex.analisadorLexico(caminho);
-      
-//        System.out.println("Lexemas");
-//        for(int i = 0; i < lexemas.size(); i++){
-//            System.out.println(lexemas.get(i).getTipoToken() + " " + lexemas.get(i).getToken());
-//        }
         
-        if(lexemas.get(0).getTipoToken() != TipoToken.PALAVRA_RESERVADA){
-            throw new Error("Erro na declaração de variáveis a cadeia deve iniciar com um indentificador de tipos");
-        }
-        
-        for(; this.index<lexemas.size(); this.index++){
-            if(!buscarFimDeclaracao(lexemas.get(index-1), lexemas.get(index))){
-                System.out.println("ERRO");
-                throw new Error("Erro na declaração de variáveis");
-            }
-        }
-        
-        if(programa(caminho)){
+        if(programa()){
             System.out.println("deu certo");
         }
         else{
-            System.out.println("deu merda");
+            System.out.println("Alguma coisa deu errado");
         }
     }
     
-    public boolean programa(String caminho) throws IOException{
-        if(lexema().equals("program")){
-            anlLex.analisadorLexico(caminho);
-            if(token().equals("IDENTIFICADOR")){
-                anlLex.analisadorLexico(caminho);
-                if(lexema().equals(";")){
-                    anlLex.analisadorLexico(caminho);
-                    if(bloco(caminho)){
-                        if(lexema().equals(".")){
-                            return true;
-                        }
-                        else
-                        {
-                            System.out.println("Deu problema");
-                            return false;
-                        }
+    public boolean programa(){
+        if(lexemas.get(index).getToken().equals("program")){
+            index++;
+            if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+                index++;
+                if(lexemas.get(index).getTipoToken().equals(TipoToken.PONTO_VIRGULA)){
+                    index++;
+                    if(bloco()){
+                        if(lexemas.get(index).getTipoToken().equals(TipoToken.PONTO))
+                        return true;
                     }
-                    else 
-                        return false;
-                    
-                }
-                else
-                {
-                    System.out.println("Deu problema");
-                    return false;
                 }
             }
-            else
-            {
-                System.out.println("Deu problema");
-                return false;
-            }
-            
         }
-        else
-        {
-            System.out.println("Deu problema");
-            return false;
-        }
-        
+        return false;
     }
     
-    public boolean bloco(String caminho) throws IOException{
-        if(lexema().equals("boolean") || lexema().equals("int")){
-            if(!parteDeDeclaracoesDeVariaveis(caminho))
+    public boolean bloco(){
+        if(lexemas.get(index).getToken().equals("boolean") || lexemas.get(index).getToken().equals("int")){
+            index++;
+            if(!parteDeDeclaracoesDeVariaveis()){
                 return false;
+            }
         }
-        if(lexema().equals("procedure")){
-            if(!parteDeDeclaracoesDeSubrotinas(caminho))
-                return false;
-            
+        if(lexemas.get(index).getToken().equals("procedure")){
+            index++;
+            if(!parteDeDeclaracoesDeSubrotinas()) return false;
         }
-        
-        if(lexema().equals("begin")){
-            if(!comandoComposto(caminho))
+        if(lexemas.get(index).getToken().equals("begin")){
+            index++;
+            if(!comandoComposto())
                 return false;
             else
                 return true;
         }
+        return false;
+    }
+    
+    public boolean parteDeDeclaracoesDeVariaveis(){
+        while(lexemas.get(index).getToken().equals("boolean") || lexemas.get(index).getToken().equals("int")){
+            index++;
+            if(declaracaoDeVariaveis()){
+                if(lexemas.get(index).getToken().equals(";")){
+                    index++;
+                    if(buscarFimDeclaracao(lexemas.get(index), lexemas.get(index)))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    public boolean declaracaoDeVariaveis(){
+        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+            index++;
+            if(listaDeIdentificadores()){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean listaDeIdentificadores(){
+        while(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+            index++;
+            if(lexemas.get(index).getToken().equals(",")){
+                index++;
+            }
+        }
+        return true;
+    }
+    
+    public boolean parteDeDeclaracoesDeSubrotinas(){
+        while(lexemas.get(index).getToken().equals("procedure")){
+            if(declaracaoDeProcedimento()){
+                if(lexemas.get(index).getToken().equals(";"))
+                    index++;
+                    return true;
+                
+            }   
+        }
+        return false;
+    }
+    
+    public boolean declaracaoDeProcedimento(){
+        index++;
+        if(lexemas.get(index).getTipoToken().equals("IDENTIFICADOR")){
+            index++;
+            if(lexemas.get(index).getToken().equals("(")){
+                if(!parametrosFormais())
+                    return false;
+            }
+            if(lexemas.get(index).getToken().equals(";")){
+                index++;
+                return bloco();
+            }
+            else{
+                return false;
+            }
+        }
         else{
-            System.out.println("Deu problema");
             return false;
         }
     }
     
-    public boolean parteDeDeclaracoesDeVariaveis(String caminho) throws IOException{
-        
-        while(lexema().equals("boolean") || lexema().equals("int")){
-            if(declaracaoDeVariaveis(caminho)){
-                    if(lexema().equals(";")){
-                        anlLex.analisadorLexico(caminho);
+    public boolean parametrosFormais(){
+        index++;
+        if(lexemas.get(index).getToken().equals("var"))
+            index++;
+        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+            if(secaoDeParametrosFormais()){
+                while(lexemas.get(index).getToken().equals(";")){
+                    index++;
+                    if(lexemas.get(index).getToken().equals("var"))
+                        index++;
+                    if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+                        if(!secaoDeParametrosFormais()){
+                            return false;
+                        }
                     }
                     else{
-                        System.out.println("Deu problema");
-                        
-                        return false;
-                    }
-            }
-            else
-                return false;
-        }
-        return true;   
-    }
-    
-    public boolean declaracaoDeVariaveis(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(token().equals(TipoToken.IDENTIFICADOR)){
-            if(listaDeIdentificadores(caminho))
-                return true;
-            else
-                return false;
-        }
-        else{
-            System.out.println("Deu merda");
-            return false;
-        }
-        
-    }
-    
-    public boolean listaDeIdentificadores(String caminho) throws IOException{
-        while(token().equals(TipoToken.IDENTIFICADOR)){
-            anlLex.analisadorLexico(caminho);
-            if(lexema().equals(",")){
-                anlLex.analisadorLexico(caminho);
-            }
-        }
-        return true;
-    }
-    
-    public boolean parteDeDeclaracoesDeSubrotinas(String caminho) throws IOException{
-        while(lexema().equals(TipoToken.PALAVRA_RESERVADA)){
-            if(declaracaoDeProcedimento(caminho)){
-                if(lexema().equals(";"))
-                    anlLex.analisadorLexico(caminho);
-                else
-                {
-                    System.out.println("Deu problema");
-                    return false;
-                }
-            }
-            else
-                return false;
-                
-        }
-        return true;
-    }
-    
-    public boolean declaracaoDeProcedimento(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(token().equals(TipoToken.IDENTIFICADOR)){
-            anlLex.analisadorLexico(caminho);
-            if(lexema().equals("(")){
-                if(!parametrosFormais(caminho))
-                    return false;
-            }
-            if(lexema().equals(";"))
-            {
-                anlLex.analisadorLexico(caminho);
-                return bloco(caminho);
-                
-            }
-            else
-            {
-                System.out.println("Deu merda");
-                
-                return false;
-            }
-        }
-        else
-        {
-            System.out.println("Deu merda");
-            return false;
-        }
-    }
-    
-    public boolean parametrosFormais(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(lexema().equals("var"))
-            anlLex.analisadorLexico(caminho);
-        if(token().equals("IDENTIFICADOR"))
-        {
-            if(secaoDeParametrosFormais(caminho)){
-                while(lexema().equals(";"))
-                {
-                    anlLex.analisadorLexico(caminho);
-                    if(lexema().equals("var"))
-                        anlLex.analisadorLexico(caminho);
-                    if(token().equals("IDENTIFICADOR")){
-                        if(!secaoDeParametrosFormais(caminho)){
-                            return false;
-                        }
-                    }
-                    {
-                        System.out.println("Deu merda");
                         return false;
                     }
                 }
-                if(lexema().equals(")"))
-                {
-                    anlLex.analisadorLexico(caminho);
+                if(lexemas.get(index).getToken().equals(")")){
+                    index++;
                     return true;
                 }
-                else
-                {
-                        System.out.println("Deu merda");
+                else{
                        return false;
                 }
             }
             else
                 return false;
         }
-        else
-        {
-            System.out.println("Deu merda");
+        else{
             return false;
         }
-        
     }
     
-    public boolean secaoDeParametrosFormais(String caminho) throws IOException{
-        
-        if(listaDeIdentificadores(caminho)){
-            if(lexema().equals(":")){
-                anlLex.analisadorLexico(caminho);
-                if(lexema().equals("int") || lexema().equals("boolean")){
-                    anlLex.analisadorLexico(caminho);
+    public boolean secaoDeParametrosFormais(){
+        if(listaDeIdentificadores()){
+            if(lexemas.get(index).getToken().equals(":")){
+                index++;
+                if(lexemas.get(index).getToken().equals("int") || lexemas.get(index).getToken().equals("boolean")){
+                    index++;
                     return true;
                 }
-                else
-                {
-                    System.out.println("deu merda");
+                else{
                     return false;
                 }
             }
-            else
-            {
-                System.out.println("deu merda");
+            else{
                 return false;
             }
         }
         else
             return false;
-        
     }
     
-    public boolean comandoComposto(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(comando(caminho)){
-            while(lexema().equals(";")){
-                anlLex.analisadorLexico(caminho);
-                if(!comando(caminho))
+    public boolean comandoComposto(){
+        index++;
+        
+        if(comando()){
+            while(lexemas.get(index).getToken().equals(";")){
+                index++;
+                if(!comando())
                     return false;
             }
-            if(lexema().equals("end"))
-            {
-                anlLex.analisadorLexico(caminho);
+            if(lexemas.get(index).getToken().equals("end")){
+                index++;
                 return true;
             }
-            else
-            {
-                System.out.println("deu merda");
+            else{
                 return false;
             }
         }
         return false;
     }
     
-    public boolean comando(String caminho) throws IOException{
-        if(token().equals("IDENTIFICADOR"))
-        {
-            anlLex.analisadorLexico(caminho);
-            if(lexema().equals(":=")){
-                anlLex.analisadorLexico(caminho);
-                return expressao(caminho);
+    public boolean comando(){
+        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+            index++;
+            if(lexemas.get(index).getToken().equals(":=")){
+                index++;
+                return expressao();
             }
-            if(lexema().equals("(")){
-                anlLex.analisadorLexico(caminho);
-                if(listaDeExpressoes(caminho)){
-                    if(lexema().equals(")")){
-                        anlLex.analisadorLexico(caminho);
+            if(lexemas.get(index).getToken().equals("(")){
+                index++;
+                if(listaDeExpressoes()){
+                    if(lexemas.get(index).getToken().equals(")")){
+                        index++;
                         return true;
                     }
-                    else
-                    {
-                        System.out.println("Deu merda");
+                    else{
                         return false;
                     }
                 }
                 else
                     return false;
             }
-            return true;
-        }
-        else
-        {
-            if(lexema().equals("read") || lexema().equals("write")){
-                anlLex.analisadorLexico(caminho);
-                if(lexema().equals("(")){
-                    anlLex.analisadorLexico(caminho);
-                    if(listaDeExpressoes(caminho)){
-                        if(lexema().equals(")")){
-                            anlLex.analisadorLexico(caminho);
-                            return true;
-                        }
-                        else
-                        {
-                            System.out.println("deu merda");
-                            return false;
-                        }
-                    }
-                    else
-                        return false;
-                }
-                else
-                {
-                    System.out.println("deu merda");
-                    return false;
-                }
-            }
-            else
-            {
-                if(lexema().equals("begin"))
-                    return comandoComposto(caminho);
-                else
-                {
-                    if(lexema().equals("if"))
-                        return comandoCondicional(caminho);
-                    else
-                    {
-                        if(lexema().equals("while"))
-                            return comandoRepetitivo(caminho);
-                        else{
-                            System.out.println("deu merda");
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    public boolean comandoCondicional(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(expressao(caminho)){
-            if(lexema().equals("then")){
-                anlLex.analisadorLexico(caminho);
-                if(comando(caminho)){
-                    if(lexema().equals("else")){
-                        anlLex.analisadorLexico(caminho);
-                        if(comando(caminho))
-                            return true;
-                        else
-                            return false;
-                    }
-                    else
-                        return true;
-                }
-                else
-                    return false;
-            }
-            else
-            {
-                System.out.println("deu merda");
-                return false;
-            }
-        }
-        else
-            return false;
-    }
-    
-    public boolean comandoRepetitivo(String caminho) throws IOException{
-        anlLex.analisadorLexico(caminho);
-        if(expressao(caminho)){
-            if(lexema().equals("do")){
-                anlLex.analisadorLexico(caminho);
-                return comando(caminho);
-            }
-            else
-            {
-                System.out.println("deu merda");
-                return false;
-            }
-        }
-        else
-            return false;
-    }
-    
-    public boolean expressao(String caminho) throws IOException{
-        if(expressaoSimples(caminho)){
-            if(token().length() >= 14 && token().substring(0, 13).equals("OP RELACIONAL")){
-                
-                anlLex.analisadorLexico(caminho);
-                return expressaoSimples(caminho);
-            }
-            else
-                return true;
-        }
-        else
-            return false;
-    }
-    
-    public boolean expressaoSimples(String caminho) throws IOException{
-        if(lexema().equals("+") || lexema().equals("-"))
-            anlLex.analisadorLexico(caminho);
-        if(termo(caminho)){
-            while(lexema().equals("+") || lexema().equals("-") || lexema().equals("or")){
-                anlLex.analisadorLexico(caminho);
-                if(!termo(caminho))
-                    return false;
-            }
-            return true;
-        }
-        else
-            return false;
-    }
-    
-    public boolean termo(String caminho) throws IOException{
-        if(fator(caminho)){
-            while(lexema().equals("*") || lexema().equals("div") || lexema().equals("and")){
-                anlLex.analisadorLexico(caminho);
-                if(!fator(caminho))
-                    return false;
-            }
-            return true;
-        }
-        else
-            return false;
-    }
-    
-    public boolean fator(String caminho) throws IOException{
-        if(token().equals("IDENTIFICADOR")|| lexema().equals("true") || lexema().equals("false"))
-        {
-            anlLex.analisadorLexico(caminho);
             return true;
         }
         else{
-            if(token().equals("NUMERO INTEIRO")){
-                anlLex.analisadorLexico(caminho);
-                return true;
-            }
-            else
-            {
-                if(lexema().equals("(")){
-                    anlLex.analisadorLexico(caminho);
-                    if(expressao(caminho)){
-                        if(lexema().equals(")")){
-                            anlLex.analisadorLexico(caminho);
+            if(lexemas.get(index).getToken().equals("read") || lexemas.get(index).getToken().equals("write")){
+                index++;
+                if(lexemas.get(index).getToken().equals("(")){
+                    index++;
+                    if(listaDeExpressoes()){
+                        if(lexemas.get(index).getToken().equals(")")){
+                            index++;
                             return true;
-                                  
                         }
-                        else
-                        {
-                            System.out.println("Deu merda");
+                        else{
                             return false;
                         }
-                        
                     }
                     else
                         return false;
                 }
-                else
-                {
-                    if(lexema().equals("not")){
-                        anlLex.analisadorLexico(caminho);
-                        return fator(caminho);
-                    }
+                else{
+                    return false;
+                }
+            }
+            else{
+                if(lexemas.get(index).getToken().equals("begin"))
+                    return comandoComposto();
+                else{
+                    if(lexemas.get(index).getToken().equals("if"))
+                        return comandoCondicional();
                     else{
-                        System.out.println("deu merda");
-                        return false;
+                        if(lexemas.get(index).getToken().equals("while"))
+                            return comandoRepetitivo();
+                        else{
+                            return false;
+                        }
                     }
                 }
             }
         }
     }
     
-    public boolean listaDeExpressoes(String caminho) throws IOException{
-        if(expressao(caminho)){
-            while(lexema().equals(","))
-            {
-                anlLex.analisadorLexico(caminho);
-                if(!expressao(caminho))
+    public boolean comandoCondicional(){
+        index++;
+        if(expressao()){
+            if(lexemas.get(index).getToken().equals("then")){
+                index++;
+                if(comando()){
+                    if(lexemas.get(index).getToken().equals("else")){
+                        index++;
+                        if(comando())
+                            return true;
+                        else
+                            return false;
+                    }
+                    else
+                        return true;
+                }
+                else
+                    return false;
+            }
+            else{
+                return false;
+            }
+        }
+        else
+            return false;
+    }
+    
+    public boolean comandoRepetitivo(){
+        index++;
+        if(expressao()){
+            if(lexemas.get(index).getToken().equals("do")){
+                index++;
+                return comando();
+            }
+            else{
+                return false;
+            }
+        }
+        else
+            return false;
+    }
+    
+    public boolean expressao(){
+        return true;
+    }
+    
+    public boolean listaDeExpressoes(){
+        if(expressao()){
+            while(lexemas.get(index).getToken().equals(",")){
+                index++;
+                if(!expressao())
                     return false;
             }
             return true;
@@ -518,8 +334,6 @@ public class AnalisadorSintatico {
         else
             return false;
     }
-           
-    
     
      public boolean buscarFimDeclaracao(Lexema lexAnt, Lexema lexProx){
         if((lexAnt.getTipoToken() == TipoToken.IDENTIFICADOR && lexProx.getTipoToken() == TipoToken.VIRGULA) || ( lexAnt.getTipoToken() == TipoToken.VIRGULA && lexProx.getTipoToken() == TipoToken.IDENTIFICADOR )){
@@ -538,14 +352,6 @@ public class AnalisadorSintatico {
         //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
         
         return false;
-    }
-     
-     public String lexema(){
-        return lexemas.get(lexemas.size()-1).getToken();
-    }
-     
-     public String token(){
-        return lexemas.get(lexemas.size()-1).getToken();
     }
     
 }

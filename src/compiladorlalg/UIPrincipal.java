@@ -153,8 +153,6 @@ public class UIPrincipal extends javax.swing.JFrame {
                     resultado_sintatico.setBackground(Color.red);
                     resultado_sintatico.setOpaque(true);
                     resultado_sintatico.setText(e + "");
-                } catch (IOException ex) {
-                    Logger.getLogger(UIPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
                 for(int i = 0; i < lexemasProduzidos.size(); i++){
