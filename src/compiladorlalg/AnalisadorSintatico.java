@@ -22,15 +22,15 @@ public class AnalisadorSintatico {
     }
     
    
-    public void analisadorSintaticoAtribuicao(String caminho){
+    public boolean analisadorSintaticoAtribuicao(String caminho){
         this.anlLex = new AnalisadorLexico();
         this.lexemas = anlLex.analisadorLexico(caminho);
         
         if(programa()){
-            System.out.println("deu certo");
+           return true;
         }
         else{
-            System.out.println("Alguma estava errado");
+            throw new Error("Possui algum erro");
         }
     }
     
