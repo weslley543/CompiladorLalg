@@ -143,6 +143,26 @@ public class AnalisadorLexico {
                             aux = new Lexema(",", TipoToken.VIRGULA, linha, colunas.get(0));
                             lexemas.add(aux);
                             break;
+                        case '=':
+                            aux = new Lexema("=", TipoToken.IGUAL, linha, colunas.get(0));
+                            lexemas.add(aux);
+                            break;
+                        case ':':
+                            aux = new Lexema(":", TipoToken.DOIS_PONTOS, linha, colunas.get(0));
+                            lexemas.add(aux);
+                            break;
+                        case '(':
+                            aux = new Lexema("(", TipoToken.ABRE_PARENTESES, linha, colunas.get(0));
+                            lexemas.add(aux);
+                            break;
+                        case ')':
+                            aux = new Lexema(")", TipoToken.FECHA_PARENTESES, linha, colunas.get(0));
+                            lexemas.add(aux);
+                            break;
+                        case '.':
+                            aux = new Lexema(".", TipoToken.PONTO, linha, colunas.get(0));
+                            lexemas.add(aux);
+                            break;
                         default: 
                             lexemas.add(new Lexema(Character.toString(chr), TipoToken.ERRO, linha, coluna));
                     }

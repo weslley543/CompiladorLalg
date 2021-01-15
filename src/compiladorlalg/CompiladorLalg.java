@@ -18,10 +18,10 @@ public class CompiladorLalg {
      */
     public static void main(String[] args) {
         
-//        UIPrincipal principal = new UIPrincipal();
-//        principal.setVisible(true);
-          AnalisadorSintatico a = new AnalisadorSintatico();
-          a.analisadorSintaticoAtribuicao();
+        UIPrincipal principal = new UIPrincipal();
+        principal.setVisible(true);
+          //AnalisadorSintatico a = new AnalisadorSintatico();
+          //a.analisadorSintaticoAtribuicao();
           
           
           
