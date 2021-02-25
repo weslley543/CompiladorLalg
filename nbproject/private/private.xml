@@ -3,12 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/arquivoTeste.txt</file>
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/AnalisadorSintatico.java</file>
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/CompiladorLalg.java</file>
+            <file>file:/C:/Users/wesll/Documents/NetBeansProjects/CompiladorLalg/src/compiladorlalg/TipoToken.java</file>
+=======
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/AnalisadorSintatico.java</file>
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/Lexema.java</file>
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/CompiladorLalg.java</file>
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/AnalisadorLexico.java</file>
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/UIPrincipal.java</file>
             <file>file:/C:/Users/giuli/OneDrive/Documentos/Unesp/Compiladores/CompiladorLalg/src/compiladorlalg/TipoToken.java</file>
+>>>>>>> 79f1e305c826a31e743e4faf5f16f74cdcc1bd2f
         </group>
     </open-files>
 </project-private>
