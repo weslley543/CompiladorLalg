@@ -9,57 +9,47 @@ package compiladorlalg;
  *
  * @author wesll
  */
-public class Lexema {
-   public String token;
-   public TipoToken tipoToken;
-   public int linhaLida;
-   public int colunaLida;
+public class Lexema {private String lexema;
+    private String token;
+    private int linha;
+    private int coluna;
 
-    public Lexema(String token, TipoToken tipoToken) {
+    public Lexema(String token, String lexema, int linha, int coluna) {
+        this.lexema = lexema;
         this.token = token;
-        this.tipoToken = tipoToken;
-    }
-    
-    public Lexema(String token, TipoToken tipoToken, int nLinha, int nColuna) {
-        this.token = token;
-        this.tipoToken = tipoToken;
-        this.linhaLida = nLinha;
-        this.colunaLida = nColuna;
+        this.linha = linha;
+        this.coluna = coluna;
     }
 
+    public void setLinha(int linha) {
+        this.linha = linha;
+    }
+
+    public void setColuna(int coluna) {
+        this.coluna = coluna;
+    }
+
+    public int getLinha() {
+        return linha;
+    }
+
+    public int getColuna() {
+        return coluna;
+    }
+
+    public String getLexema() {
+        return lexema;
+    }
 
     public String getToken() {
         return token;
     }
 
+    public void setLexema(String lexema) {
+        this.lexema = lexema;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
-
-    public TipoToken getTipoToken() {
-        return tipoToken;
-    }
-
-    public void setTipoToken(TipoToken tipoToken) {
-        this.tipoToken = tipoToken;
-    }
-
-    public int getLinhaLida() {
-        return linhaLida;
-    }
-
-    public void setLinhaLida(int linhaLida) {
-        this.linhaLida = linhaLida;
-    }
-
-    public int getColunaLida() {
-        return colunaLida;
-    }
-
-    public void setColunaLida(int colunaLida) {
-        this.colunaLida = colunaLida;
-    }
-
-    
-   
 }

@@ -6,229 +6,313 @@
 package compiladorlalg;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
+import javax.swing.JTextPane;
 
 /**
  *
  * @author wesll
  */
 public class AnalisadorSintatico {
-    public ArrayList <Lexema> lexemas;
-    public AnalisadorLexico anlLex;
-    public int index;
-    public AnalisadorSintatico(){
-        lexemas = null;
-        this.index = 0;
-    }
+    private static String erroSintatico;
+    private static ArrayList<Lexema> tokens; 
+    private static Lexico lex;
     
-   
-    public void analisadorSintaticoAtribuicao(String caminho){
-        this.anlLex = new AnalisadorLexico();
-        this.lexemas = anlLex.analisadorLexico(caminho);
+    public static ArrayList<Lexema> analisadorSintatico(String codigoFonte, JTextPane text) throws IOException{
+        lex = lex = new Lexico (new StringReader(codigoFonte));
+        tokens = new ArrayList<Lexema>();
+        erroSintatico = "";
+        analisadorLexico();
         
         if(programa()){
-            System.out.println("deu certo");
+            text.setText("O código está correto sintaticaente");
+            text.setBackground(java.awt.Color.green);
         }
-        else{
-            System.out.println("Alguma estava errado");
+        else
+        {
+            text.setText(erroSintatico);
+            text.setBackground(java.awt.Color.red);
+            while(!token().equals("FIM"))
+                analisadorLexico();
+            tokens.remove(tokens.size()-1);
         }
+        
+        return tokens;
+        
+        
+        
     }
     
-    public boolean programa(){
-        if(lexemas.get(index).getToken().equals("program")){
-            index++;
-            if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
-                index++;
-                if(lexemas.get(index).getTipoToken().equals(TipoToken.PONTO_VIRGULA)){
-                    index++;
+    public static boolean programa() throws IOException{
+        if(lexema().equals("program"))
+        {
+            analisadorLexico();
+            if(token().equals("IDENTIFICADOR")){
+                analisadorLexico();
+                if(lexema().equals(";")){
+                    analisadorLexico();
                     if(bloco()){
-                        if(lexemas.get(index).getTipoToken().equals(TipoToken.PONTO))
-                        return true;
+                        if(lexema().equals(".")){
+                            return true;
+                        }
+                        else
+                        {
+                            erroSintatico = "Esperado '.' na linha " + linha() + " coluna " + coluna();
+                            return false;
+                        }
                     }
+                    else 
+                        return false;
+                    
+                }
+                else
+                {
+                    erroSintatico = "Esperado ';' na linha " + linha() + " coluna " + coluna();
+                    return false;
                 }
             }
-        }
-        return false;
-    }
-    
-    public boolean bloco(){
-        if(lexemas.get(index).getToken().equals("boolean") || lexemas.get(index).getToken().equals("int")){
-            index++;
-            if(!parteDeDeclaracoesDeVariaveis()){
+            else
+            {
+                erroSintatico = "Esperado um identificador do programa na linha " + linha() + " coluna " + coluna();
                 return false;
             }
+            
         }
-        if(lexemas.get(index).getToken().equals("procedure")){
-            index++;
-            if(!parteDeDeclaracoesDeSubrotinas()) return false;
+        else
+        {
+            erroSintatico = "Esperada a palavra chave 'program' na linha " + linha() + " coluna " + coluna();
+            return false;
         }
-        if(lexemas.get(index).getToken().equals("begin")){
-            index++;
+        
+    }
+    
+    public static boolean bloco() throws IOException{
+        if(lexema().equals("boolean") || lexema().equals("int")){
+            if(!parteDeDeclaracoesDeVariaveis())
+                return false;
+        }
+        if(lexema().equals("procedure")){
+            if(!parteDeDeclaracoesDeSubrotinas())
+                return false;
+            
+        }
+        
+        if(lexema().equals("begin")){
             if(!comandoComposto())
                 return false;
             else
                 return true;
         }
-        return false;
+        else{
+            erroSintatico = "Esperada a palavra chave 'begin' na linha " + linha() + " coluna " + coluna();
+            return false;
+        }
     }
     
-    public boolean parteDeDeclaracoesDeVariaveis(){
-        while(lexemas.get(index).getToken().equals("boolean") || lexemas.get(index).getToken().equals("int")){
-            index++;
+    public static boolean parteDeDeclaracoesDeVariaveis() throws IOException{
+        
+        while(lexema().equals("boolean") || lexema().equals("int")){
             if(declaracaoDeVariaveis()){
-                if(lexemas.get(index).getToken().equals(";")){
-                    index++;
-                    if(buscarFimDeclaracao(lexemas.get(index), lexemas.get(index)))
-                        return true;
-                }
+                    if(lexema().equals(";")){
+                        analisadorLexico();
+                    }
+                    else{
+                        erroSintatico = "Esperado ';' na linha " + linha() + " coluna " + coluna();
+                        
+                        return false;
+                    }
             }
+            else
+                return false;
         }
-        return false;
+        return true;   
     }
     
-    public boolean declaracaoDeVariaveis(){
-        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
-            index++;
-            if(listaDeIdentificadores()){
+    
+    public static boolean declaracaoDeVariaveis() throws IOException{
+        analisadorLexico();
+        if(token().equals("IDENTIFICADOR")){
+            if(listaDeIdentificadores())
                 return true;
-            }
+            else
+                return false;
         }
-        return false;
+        else{
+            erroSintatico = "Esperado um identificador na linha " + linha() + " coluna " + coluna();
+            return false;
+        }
+        
     }
     
-    public boolean listaDeIdentificadores(){
-        while(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
-            index++;
-            if(lexemas.get(index).getToken().equals(",")){
-                index++;
+    public static boolean listaDeIdentificadores() throws IOException{
+        while(token().equals("IDENTIFICADOR")){
+            analisadorLexico();
+            if(lexema().equals(",")){
+                analisadorLexico();
             }
         }
         return true;
     }
     
-    public boolean parteDeDeclaracoesDeSubrotinas(){
-        while(lexemas.get(index).getToken().equals("procedure")){
+    public static boolean parteDeDeclaracoesDeSubrotinas() throws IOException{
+        while(lexema().equals("procedure")){
             if(declaracaoDeProcedimento()){
-                if(lexemas.get(index).getToken().equals(";"))
-                    index++;
-                    return true;
+                if(lexema().equals(";"))
+                    analisadorLexico();
+                else
+                {
+                    erroSintatico = "Esperado ';' na linha " + linha() + " coluna " + coluna();
+                    
+                    return false;
+                }
+            }
+            else
+                return false;
                 
-            }   
         }
-        return false;
+        return true;
     }
     
-    public boolean declaracaoDeProcedimento(){
-        index++;
-        if(lexemas.get(index).getTipoToken().equals("IDENTIFICADOR")){
-            index++;
-            if(lexemas.get(index).getToken().equals("(")){
+    public static boolean declaracaoDeProcedimento() throws IOException{
+        analisadorLexico();
+        if(token().equals("IDENTIFICADOR"))
+        {
+            analisadorLexico();
+            if(lexema().equals("(")){
                 if(!parametrosFormais())
                     return false;
             }
-            if(lexemas.get(index).getToken().equals(";")){
-                index++;
+            if(lexema().equals(";"))
+            {
+                analisadorLexico();
                 return bloco();
+                
             }
-            else{
+            else
+            {
+                erroSintatico = "Esperado ';' na linha " + linha() + " coluna " + coluna();
+                
                 return false;
             }
         }
-        else{
+        else
+        {
+            erroSintatico = "Esperado um identificador na linha " + linha() + " coluna " + coluna();
             return false;
         }
     }
     
-    public boolean parametrosFormais(){
-        index++;
-        if(lexemas.get(index).getToken().equals("var"))
-            index++;
-        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+    public static boolean parametrosFormais() throws IOException{
+        analisadorLexico();
+        if(lexema().equals("var"))
+            analisadorLexico();
+        if(token().equals("IDENTIFICADOR"))
+        {
             if(secaoDeParametrosFormais()){
-                while(lexemas.get(index).getToken().equals(";")){
-                    index++;
-                    if(lexemas.get(index).getToken().equals("var"))
-                        index++;
-                    if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
+                while(lexema().equals(";"))
+                {
+                    analisadorLexico();
+                    if(lexema().equals("var"))
+                        analisadorLexico();
+                    if(token().equals("IDENTIFICADOR")){
                         if(!secaoDeParametrosFormais()){
                             return false;
                         }
                     }
-                    else{
+                    {
+                        erroSintatico = "Esperado um identificador na linha " + linha() + " coluna " + coluna();
                         return false;
                     }
                 }
-                if(lexemas.get(index).getToken().equals(")")){
-                    index++;
+                if(lexema().equals(")"))
+                {
+                    analisadorLexico();
                     return true;
                 }
-                else{
+                else
+                {
+                        erroSintatico = "Esperado ')' na linha " + linha() + " coluna " + coluna();
                        return false;
                 }
             }
             else
                 return false;
         }
-        else{
+        else
+        {
+            erroSintatico = "Esperado um identificador na linha " + linha() + " coluna " + coluna();
             return false;
         }
+        
     }
     
-    public boolean secaoDeParametrosFormais(){
+    public static boolean secaoDeParametrosFormais() throws IOException{
+        
         if(listaDeIdentificadores()){
-            if(lexemas.get(index).getToken().equals(":")){
-                index++;
-                if(lexemas.get(index).getToken().equals("int") || lexemas.get(index).getToken().equals("boolean")){
-                    index++;
+            if(lexema().equals(":")){
+                analisadorLexico();
+                if(lexema().equals("int") || lexema().equals("boolean")){
+                    analisadorLexico();
                     return true;
                 }
-                else{
+                else
+                {
+                    erroSintatico = "Esperado um tipo de dado (int ou boolean) na linha " + linha() + " coluna " + coluna();
                     return false;
                 }
             }
-            else{
+            else
+            {
+                erroSintatico = "Esperado ':' na linha " + linha() + " coluna " + coluna();
                 return false;
             }
         }
         else
             return false;
+        
     }
     
-    public boolean comandoComposto(){
-        index++;
-        
+    public static boolean comandoComposto() throws IOException{
+        analisadorLexico();
         if(comando()){
-            while(lexemas.get(index).getToken().equals(";")){
-                index++;
+            while(lexema().equals(";")){
+                analisadorLexico();
                 if(!comando())
                     return false;
             }
-            if(lexemas.get(index).getToken().equals("end")){
-                index++;
+            if(lexema().equals("end"))
+            {
+                analisadorLexico();
                 return true;
             }
-            else{
+            else
+            {
+                erroSintatico = "Esperada palavra chave 'end' na linha " + linha() + " coluna " + coluna();
                 return false;
             }
         }
         return false;
     }
     
-    public boolean comando(){
-        if(lexemas.get(index).getTipoToken().equals(TipoToken.IDENTIFICADOR)){
-            index++;
-            if(lexemas.get(index).getToken().equals(":=")){
-                index++;
+    public static boolean comando() throws IOException{
+        if(token().equals("IDENTIFICADOR"))
+        {
+            analisadorLexico();
+            if(lexema().equals(":=")){
+                analisadorLexico();
                 return expressao();
             }
-            if(lexemas.get(index).getToken().equals("(")){
-                index++;
+            if(lexema().equals("(")){
+                analisadorLexico();
                 if(listaDeExpressoes()){
-                    if(lexemas.get(index).getToken().equals(")")){
-                        index++;
+                    if(lexema().equals(")")){
+                        analisadorLexico();
                         return true;
                     }
-                    else{
+                    else
+                    {
+                        erroSintatico = "Esperado ')' na linha " + linha() + " coluna " + coluna();
                         return false;
                     }
                 }
@@ -237,37 +321,46 @@ public class AnalisadorSintatico {
             }
             return true;
         }
-        else{
-            if(lexemas.get(index).getToken().equals("read") || lexemas.get(index).getToken().equals("write")){
-                index++;
-                if(lexemas.get(index).getToken().equals("(")){
-                    index++;
+        else
+        {
+            if(lexema().equals("read") || lexema().equals("write")){
+                analisadorLexico();
+                if(lexema().equals("(")){
+                    analisadorLexico();
                     if(listaDeExpressoes()){
-                        if(lexemas.get(index).getToken().equals(")")){
-                            index++;
+                        if(lexema().equals(")")){
+                            analisadorLexico();
                             return true;
                         }
-                        else{
+                        else
+                        {
+                            erroSintatico = "Esperado ')' na linha " + linha() + " coluna " + coluna();
                             return false;
                         }
                     }
                     else
                         return false;
                 }
-                else{
+                else
+                {
+                    erroSintatico = "Esperado '(' na linha " + linha() + " coluna " + coluna();
                     return false;
                 }
             }
-            else{
-                if(lexemas.get(index).getToken().equals("begin"))
+            else
+            {
+                if(lexema().equals("begin"))
                     return comandoComposto();
-                else{
-                    if(lexemas.get(index).getToken().equals("if"))
+                else
+                {
+                    if(lexema().equals("if"))
                         return comandoCondicional();
-                    else{
-                        if(lexemas.get(index).getToken().equals("while"))
+                    else
+                    {
+                        if(lexema().equals("while"))
                             return comandoRepetitivo();
                         else{
+                            erroSintatico = "Esperado um comando na linha " + linha() + " coluna " + coluna();
                             return false;
                         }
                     }
@@ -276,14 +369,14 @@ public class AnalisadorSintatico {
         }
     }
     
-    public boolean comandoCondicional(){
-        index++;
+    public static boolean comandoCondicional() throws IOException{
+        analisadorLexico();
         if(expressao()){
-            if(lexemas.get(index).getToken().equals("then")){
-                index++;
+            if(lexema().equals("then")){
+                analisadorLexico();
                 if(comando()){
-                    if(lexemas.get(index).getToken().equals("else")){
-                        index++;
+                    if(lexema().equals("else")){
+                        analisadorLexico();
                         if(comando())
                             return true;
                         else
@@ -295,7 +388,9 @@ public class AnalisadorSintatico {
                 else
                     return false;
             }
-            else{
+            else
+            {
+                erroSintatico = "Esperada palavra chave 'then' na linha " + linha() + " coluna " + coluna();
                 return false;
             }
         }
@@ -303,14 +398,16 @@ public class AnalisadorSintatico {
             return false;
     }
     
-    public boolean comandoRepetitivo(){
-        index++;
+    public static boolean comandoRepetitivo() throws IOException{
+        analisadorLexico();
         if(expressao()){
-            if(lexemas.get(index).getToken().equals("do")){
-                index++;
+            if(lexema().equals("do")){
+                analisadorLexico();
                 return comando();
             }
-            else{
+            else
+            {
+                erroSintatico = "Esperada palavra chave 'do' na linha " + linha() + " coluna " + coluna();
                 return false;
             }
         }
@@ -318,15 +415,27 @@ public class AnalisadorSintatico {
             return false;
     }
     
-    public boolean expressao(){
-        return true;
+    public static boolean expressao() throws IOException{
+        if(expressaoSimples()){
+            if(token().length() >= 14 && token().substring(0, 13).equals("OP RELACIONAL")){
+                
+                analisadorLexico();
+                return expressaoSimples();
+            }
+            else
+                return true;
+        }
+        else
+            return false;
     }
     
-    public boolean listaDeExpressoes(){
-        if(expressao()){
-            while(lexemas.get(index).getToken().equals(",")){
-                index++;
-                if(!expressao())
+    public static boolean expressaoSimples() throws IOException{
+        if(lexema().equals("+") || lexema().equals("-"))
+            analisadorLexico();
+        if(termo()){
+            while(lexema().equals("+") || lexema().equals("-") || lexema().equals("or")){
+                analisadorLexico();
+                if(!termo())
                     return false;
             }
             return true;
@@ -335,23 +444,123 @@ public class AnalisadorSintatico {
             return false;
     }
     
-     public boolean buscarFimDeclaracao(Lexema lexAnt, Lexema lexProx){
-        if((lexAnt.getTipoToken() == TipoToken.IDENTIFICADOR && lexProx.getTipoToken() == TipoToken.VIRGULA) || ( lexAnt.getTipoToken() == TipoToken.VIRGULA && lexProx.getTipoToken() == TipoToken.IDENTIFICADOR )){
-           //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
-            return true; 
-        }else if(lexAnt.getTipoToken() == TipoToken.IDENTIFICADOR && lexProx.getTipoToken() == TipoToken.PONTO_VIRGULA){
-            //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
-            return true;
-        }else if(lexAnt.getTipoToken() == TipoToken.PONTO_VIRGULA && lexProx.getTipoToken() == TipoToken.PALAVRA_RESERVADA){
-            //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
-            return true;
-        }else if(lexAnt.getTipoToken() == TipoToken.PALAVRA_RESERVADA && lexProx.getTipoToken() == TipoToken.IDENTIFICADOR){
-            //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+    public static boolean termo() throws IOException{
+        if(fator()){
+            while(lexema().equals("*") || lexema().equals("div") || lexema().equals("and")){
+                analisadorLexico();
+                if(!fator())
+                    return false;
+            }
             return true;
         }
-        //System.out.println(lexAnt.getToken()+ " "+ lexProx.getToken());
+        else
+            return false;
+    }
+    
+    public static boolean fator() throws IOException{
+        if(token().equals("IDENTIFICADOR")|| lexema().equals("true") || lexema().equals("false"))
+        {
+            analisadorLexico();
+            return true;
+        }
+        else{
+            if(token().equals("NUMERO INTEIRO")){
+                analisadorLexico();
+                return true;
+            }
+            else
+            {
+                if(lexema().equals("(")){
+                    analisadorLexico();
+                    if(expressao()){
+                        if(lexema().equals(")")){
+                            analisadorLexico();
+                            return true;
+                                  
+                        }
+                        else
+                        {
+                            erroSintatico = "Esperado ')' na linha " + linha() + " coluna " + coluna();
+                            return false;
+                        }
+                        
+                    }
+                    else
+                        return false;
+                }
+                else
+                {
+                    if(lexema().equals("not")){
+                        analisadorLexico();
+                        return fator();
+                    }
+                    else{
+                        erroSintatico = "Ausência de um fator na linha " + linha() + " coluna " + coluna();
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    
+    public static boolean listaDeExpressoes() throws IOException{
+        if(expressao()){
+            while(lexema().equals(","))
+            {
+                analisadorLexico();
+                if(!expressao())
+                    return false;
+            }
+            return true;
+        }
+        else
+            return false;
+    }
+           
+    
+    public static void analisadorLexico() throws IOException{
+        Lexema novo = lex.token();
+        if(novo == null)
+        //o comando abaixo adiciona um token "Fim" para indicar que acabou o código
+        //são calculadas as linha e a coluna do final do código a partir da posição do útlimo token
+        {
+            if(tokens.size() > 0)
+                tokens.add(new Lexema ("FIM", "", linha() - 1, coluna() + lexema().length() - 1));
+            else
+                tokens.add(new Lexema ("FIM", "", 0, 0));
+        }
+            
+        else{
+            tokens.add(novo);
+            if(token().equals("COMENTARIO"))
+               analisadorLexico();
+        } 
+            
+ 
+
         
-        return false;
+    }
+    
+    public static String lexema(){
+        return tokens.get(tokens.size()-1).getLexema();
+    }
+    
+    public static String token(){
+        return tokens.get(tokens.size()-1).getToken();
+    }
+    
+    public static int linha(){
+        if(tokens.size() > 0)
+            return tokens.get(tokens.size()-1).getLinha() + 1;
+        else
+            return 1;
+    }
+    
+    public static int coluna (){
+        if(tokens.size() > 0)
+            return tokens.get(tokens.size()-1).getColuna() + 1;
+        else
+            return 1;
     }
     
 }

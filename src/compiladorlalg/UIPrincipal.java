@@ -5,15 +5,10 @@
  */
 package compiladorlalg;
 
-import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,12 +18,11 @@ import javax.swing.table.DefaultTableModel;
 public class UIPrincipal extends javax.swing.JFrame {
 
     /**
-     * Creates new form UIPrincipal
+     * Creates new form UI
      */
-    AnalisadorLexico al = new AnalisadorLexico();
-    AnalisadorSintatico sintatico = new AnalisadorSintatico();
     public UIPrincipal() {
         initComponents();
+        textArea.setBorder(new NumeredBorder());
     }
 
     /**
@@ -41,134 +35,113 @@ public class UIPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
-        openFileButton = new javax.swing.JButton();
+        textArea = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel1 = new javax.swing.JLabel();
-        resultado_sintatico = new javax.swing.JLabel();
+        botaoCompilar = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable = new javax.swing.JTable();
+        jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        pane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Compilador - Giulia e Weslley");
 
-        table.setModel(new javax.swing.table.DefaultTableModel(
+        textArea.setColumns(20);
+        textArea.setRows(5);
+        jScrollPane1.setViewportView(textArea);
+
+        botaoCompilar.setText("Executar");
+        botaoCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botaoCompilarActionPerformed(evt);
+            }
+        });
+
+        jTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Simoblo", "Análise", "Linha", "Coluna"
+                "Lexema", "Token", "Linha", "Coluna"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
-            };
             boolean[] canEdit = new boolean [] {
                 false, false, false, false
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(table);
+        jScrollPane2.setViewportView(jTable);
 
-        openFileButton.setText("Abrir Arquivo");
-        openFileButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openFileButtonActionPerformed(evt);
-            }
-        });
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jLabel1.setText("Declaração de Variáveis:");
+        pane.setEditable(false);
+        jScrollPane4.setViewportView(pane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSeparator1)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 745, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(openFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(65, 65, 65)
-                        .addComponent(resultado_sintatico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jSeparator1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(botaoCompilar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator2)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(openFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(resultado_sintatico, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(62, 62, 62))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(botaoCompilar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void openFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileButtonActionPerformed
-        JFileChooser jFile = new JFileChooser();
-        int returnVal = jFile.showOpenDialog(this);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = jFile.getSelectedFile();
-            String a[] = file.getAbsolutePath().split("\\.");
-
-            if ("txt".equals(a[a.length - 1])) {
-                DefaultTableModel model = (DefaultTableModel) table.getModel(); //pega a tabela
-                
-                if(table.getRowCount() > 0){
-                    System.out.println("Tem linhas");
-                    model.getDataVector().removeAllElements();
-                }
-                
-                al.analisadorLexico(file.getAbsolutePath());
-                ArrayList<Lexema> lexemasProduzidos = al.lexemas;
-                
-                resultado_sintatico.setText("");
-                
-                try{
-                    sintatico.analisadorSintaticoAtribuicao(file.getAbsolutePath());
-                    resultado_sintatico.setBackground(Color.green);
-                    resultado_sintatico.setOpaque(true);
-                    resultado_sintatico.setText("Declaração de variáveis correta");
-                }catch(Error e){
-                    resultado_sintatico.setBackground(Color.red);
-                    resultado_sintatico.setOpaque(true);
-                    resultado_sintatico.setText(e + "");
-                }
-                
-                for(int i = 0; i < lexemasProduzidos.size(); i++){
-                    Object[] linhaTable = new Object[4];
-                    linhaTable[0] = lexemasProduzidos.get(i).token;
-                    linhaTable[1] = lexemasProduzidos.get(i).tipoToken;
-                    linhaTable[2] = lexemasProduzidos.get(i).linhaLida;
-                    linhaTable[3] = lexemasProduzidos.get(i).colunaLida + 1;
-                    model.addRow(linhaTable);
-                }
+    private void botaoCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCompilarActionPerformed
+        
+            DefaultTableModel model = (DefaultTableModel)jTable.getModel();
+            if(model.getRowCount() > 0)
+            {
+                while(model.getRowCount() > 0)
+                model.removeRow(0);
             }
-            else{
-                JOptionPane.showMessageDialog(this, "Erro na leitura do arquivo, deve ser do tipo txt");
-            }
+            //AnalisadorLexico.gerador();
+            
+            ArrayList<Lexema> tokens = null;
+        try {
+            tokens = AnalisadorSintatico.analisadorSintatico(textArea.getText(), pane);
+        } catch (IOException ex) {
+            Logger.getLogger(UIPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_openFileButtonActionPerformed
+            for (Lexema token: tokens){
+                model.addRow(new Object[] {token.getLexema(), token.getToken(), token.getLinha() + 1, token.getColuna() + 1});       
+            }
+        
+    }//GEN-LAST:event_botaoCompilarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,6 +169,7 @@ public class UIPrincipal extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(UIPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -206,11 +180,14 @@ public class UIPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton botaoCompilar;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JButton openFileButton;
-    private javax.swing.JLabel resultado_sintatico;
-    private javax.swing.JTable table;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTable jTable;
+    private javax.swing.JTextPane pane;
+    private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 }
